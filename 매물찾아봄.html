@@ -24,35 +24,44 @@
   .card .a{color:#555;margin-top:2px}
   .card .rz{color:#2b8a3e;margin-top:2px}
   .card .ad{color:#888;margin-top:2px}
-  .num-pin{color:#fff;border:2px solid #fff;border-radius:50%;width:26px;height:26px;line-height:24px;text-align:center;font-weight:700;font-size:12px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
-  .leaflet-popup-content{font-size:12px;line-height:1.5}
-  .leaflet-popup-content a{color:#03c75a;font-weight:600;text-decoration:none}
-  .leaflet-popup-content a.nland{color:#e8590c}
+  .rate{display:flex;gap:6px;margin-top:7px}
+  .rate button{flex:1;padding:8px;border:1px solid #ddd;background:#fff;border-radius:7px;font-size:13px;cursor:pointer;color:#555}
+  .card.good{background:#eaf7ef}
+  .card.good .rate .g{background:#03c75a;color:#fff;border-color:#03c75a;font-weight:700}
+  .card.bad{opacity:.45}
+  .card.bad .rate .b{background:#e03131;color:#fff;border-color:#e03131;font-weight:700}
+  #status{font-size:11px;color:#999;margin:0 12px 8px}
   @media(max-width:760px){#wrap{flex-direction:column}#map{height:50vh;flex:none}#side{width:auto;flex:1 1 auto;border-left:none;border-top:1px solid #ddd}.card{padding:12px;font-size:13px}}
 </style></head><body>
 <div id="tabs">
   <button data-k="ref">지수찾음 (13)</button>
   <button data-k="ai">AI찾음 (22)</button>
 </div>
-<div id="wrap"><div id="map"></div><div id="side"><div class="sub">2026. 9. 2. PM 3:39:24</div><div id="list"></div></div></div>
+<div id="wrap"><div id="map"></div><div id="side"><div class="sub">2026. 9. 2. PM 3:57:54</div><div id="status">평가 로딩 중…</div><div id="list"></div></div></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>
+<script type="module">
 const DATA={"ref":[{"rank":1,"no":"2644904097","type":"빌라","price":"5,000/70","area":"74/55㎡","floor":"2/3","dir":"동향","desc":"오류역 1분, 쓰리룸, 빠른입주","addr":"서울 구로구 오류동","lat":37.493496,"lng":126.845045,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2644904097","nmap":"https://map.naver.com/p?c=126.845045,37.493496,18,0,0,0,dh"},{"rank":2,"no":"2645726923","type":"단독/다가구","price":"4,000/65","area":"63/63㎡","floor":"2/3","dir":"남동향","desc":"가성비 3룸, 반려동물·주차 불가","addr":"서울 관악구 대학동","lat":37.467083,"lng":126.938996,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2645726923","nmap":"https://map.naver.com/p?c=126.938996,37.467083,18,0,0,0,dh"},{"rank":3,"no":"2644932174","type":"단독/다가구","price":"5,000/70","area":"60/60㎡","floor":"2/2","dir":"남동향","desc":"큰방3·화장실·베란다·거실","addr":"경기 광명시 철산동","lat":37.481137,"lng":126.862558,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2644932174","nmap":"https://map.naver.com/p?c=126.862558,37.481137,18,0,0,0,dh"},{"rank":4,"no":"2642119943","type":"빌라","price":"5,000/60","area":"59/46㎡","floor":"2/2","dir":"남향","desc":"지상층 쓰리룸, 채광 좋음","addr":"서울 강서구 화곡동","lat":37.535472,"lng":126.860378,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2642119943","nmap":"https://map.naver.com/p?c=126.860378,37.535472,18,0,0,0,dh"},{"rank":5,"no":"2643369633","type":"빌라","price":"4,000/70","area":"55/49㎡","floor":"3/5","dir":"서향","desc":"등촌동 3룸, 저렴","addr":"서울 강서구 등촌동","lat":37.537352,"lng":126.861501,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2643369633","nmap":"https://map.naver.com/p?c=126.861501,37.537352,18,0,0,0,dh"},{"rank":6,"no":"2646982655","type":"단독/다가구","price":"1,000/70","area":"79/79㎡","floor":"1/1","dir":"남향","desc":"독채, 방3화2, 빠른입주","addr":"경기 부천시 원미구 도당동","lat":37.506496,"lng":126.782642,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646982655","nmap":"https://map.naver.com/p?c=126.782642,37.506496,18,0,0,0,dh"},{"rank":7,"no":"2644827123","type":"빌라","price":"4,000/65","area":"61/54㎡","floor":"5/5","dir":"남동향","desc":"방2화2·거실겸방1, 즉시입주","addr":"경기 부천시 원미구 원미동","lat":37.489227,"lng":126.790269,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2644827123","nmap":"https://map.naver.com/p?c=126.790269,37.489227,18,0,0,0,dh"},{"rank":8,"no":"2641744704","type":"빌라","price":"4,000/60","area":"77/65㎡","floor":"2/2","dir":"남향","desc":"단독주택, 역곡역 도보5분","addr":"경기 부천시 원미구 역곡동","lat":37.48686,"lng":126.81513,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2641744704","nmap":"https://map.naver.com/p?c=126.81513,37.48686,18,0,0,0,dh"},{"rank":9,"no":"2646772555","type":"빌라","price":"2,000/65","area":"80/59㎡","floor":"4/4","dir":"동향","desc":"방3·거실·화2, 통베란다","addr":"인천 계양구 병방동","lat":37.547952,"lng":126.74263,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646772555","nmap":"https://map.naver.com/p?c=126.74263,37.547952,18,0,0,0,dh"},{"rank":10,"no":"2646940174","type":"빌라","price":"3,000/70","area":"58/53㎡","floor":"1/4","dir":"남향","desc":"신월초 도보3분, 1층","addr":"서울 강서구 화곡동","lat":37.538488,"lng":126.839059,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646940174","nmap":"https://map.naver.com/p?c=126.839059,37.538488,18,0,0,0,dh"},{"rank":11,"no":"2643591195","type":"단독/다가구","price":"2,000/70","area":"51/50㎡","floor":"1/2","dir":"남동향","desc":"서울대입구역, 가성비 3룸","addr":"서울 관악구 봉천동","lat":37.483553,"lng":126.94993,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2643591195","nmap":"https://map.naver.com/p?c=126.94993,37.483553,18,0,0,0,dh"},{"rank":12,"no":"2643600222","type":"다가구","price":"5,000/50","area":"52/49㎡","floor":"2/3","dir":"동향","desc":"가성비 3룸, 화일초 인근","addr":"서울 강서구 화곡동","lat":37.539157,"lng":126.847563,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2643600222","nmap":"https://map.naver.com/p?c=126.847563,37.539157,18,0,0,0,dh"},{"rank":13,"no":"2645291189","type":"빌라","price":"3,000/65","area":"47/42㎡","floor":"1/4","dir":"남향","desc":"역세권 1층 2룸","addr":"서울 강서구 화곡동","lat":37.531623,"lng":126.841303,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2645291189","nmap":"https://map.naver.com/p?c=126.841303,37.531623,18,0,0,0,dh"}],"ai":[{"rank":1,"no":"2647151433","type":"단독/다가구","price":"5,000/60","area":"58/58㎡","floor":"2/3","dir":"남향","desc":"2층 방3개,화장실1개, 큰 베란다, 저렴한 월세","addr":"","lat":37.545235,"lng":126.859883,"score":88,"reason":"방3 5천/60 딱맞음","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2647151433","nmap":"https://map.naver.com/p?c=126.859883,37.545235,18,0,0,0,dh"},{"rank":2,"no":"2645475264","type":"단독/다가구","price":"5,000/70","area":"50/50㎡","floor":"2/3","dir":"남동향","desc":"봉천동 방3,화1 즉시입주","addr":"","lat":37.488722,"lng":126.933989,"score":88,"reason":"방3 5천/70 봉천 일치","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2645475264","nmap":"https://map.naver.com/p?c=126.933989,37.488722,18,0,0,0,dh"},{"rank":3,"no":"2645124420","type":"단독/다가구","price":"4,000/65","area":"59㎡","floor":"1/3","dir":"남동향","desc":"창과 거실이 넓은 구조이고 자연 채광이 잘 들어오는 가성비 좋은 빌라","addr":"","lat":37.47632,"lng":126.929261,"score":88,"reason":"방3 채광 가성비 일치","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2645124420","nmap":"https://map.naver.com/p?c=126.929261,37.47632,18,0,0,0,dh"},{"rank":4,"no":"2646832611","type":"단독/다가구","price":"5,000/60","area":"58㎡","floor":"2/3","dir":"남향","desc":"도배장판 수리예정 10월말입주협의 방3화1 큰 베란다 조용한주택","addr":"","lat":37.545235,"lng":126.859883,"score":86,"reason":"방3 베란다 조건일치","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646832611","nmap":"https://map.naver.com/p?c=126.859883,37.545235,18,0,0,0,dh"},{"rank":5,"no":"2646483078","type":"단독/다가구","price":"5,000/60","area":"58/50㎡","floor":"중/4","dir":"남향","desc":"저렴한 방3,욕1, 넓은 베란다, 초중고 인근 ","addr":"","lat":37.545235,"lng":126.859883,"score":86,"reason":"방3 저렴 조건일치","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646483078","nmap":"https://map.naver.com/p?c=126.859883,37.545235,18,0,0,0,dh"},{"rank":6,"no":"2642627479","type":"단독/다가구","price":"4,000/70","area":"53㎡","floor":"2/3","dir":"남서향","desc":"","addr":"","lat":37.474489,"lng":126.942037,"score":86,"reason":"방3 4천/70 일치","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2642627479","nmap":"https://map.naver.com/p?c=126.942037,37.474489,18,0,0,0,dh"},{"rank":7,"no":"2646748773","type":"단독/다가구","price":"3,000/50","area":"50/50㎡","floor":"1/2","dir":"남향","desc":"방3화2 보증금조정, 1층, 주차가능소형, 즉시입주,재개발구역","addr":"","lat":37.490975,"lng":126.958551,"score":85,"reason":"방3화2 즉시입주","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646748773","nmap":"https://map.naver.com/p?c=126.958551,37.490975,18,0,0,0,dh"},{"rank":8,"no":"2647284041","type":"빌라","price":"4,000/65","area":"61/54㎡","floor":"5/5","dir":"남동향","desc":"공실 원미부흥시장부근 올수리 방3화2  엘베무","addr":"","lat":37.489227,"lng":126.790269,"score":85,"reason":"빌라 방3화2 원미","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2647284041","nmap":"https://map.naver.com/p?c=126.790269,37.489227,18,0,0,0,dh"},{"rank":9,"no":"2646256621","type":"단독/다가구","price":"3,000/70","area":"57/57㎡","floor":"고/3","dir":"남향","desc":"서울대입구역세권 학군최고 주거환경굿","addr":"","lat":37.47783,"lng":126.950608,"score":84,"reason":"방3 서울대입구 역세권","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646256621","nmap":"https://map.naver.com/p?c=126.950608,37.47783,18,0,0,0,dh"},{"rank":10,"no":"2644674531","type":"단독/다가구","price":"2,000/60","area":"70/70㎡","floor":"2/2","dir":"남향","desc":"융자없음,옥상사용, 거실있는 넓은3룸, 입주협의 가능","addr":"","lat":37.496728,"lng":126.793315,"score":84,"reason":"방3 거실 넓음","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2644674531","nmap":"https://map.naver.com/p?c=126.793315,37.496728,18,0,0,0,dh"},{"rank":11,"no":"2646942978","type":"단독/다가구","price":"2,000/60","area":"78/70㎡","floor":"2/3","dir":"남향","desc":"방3 화1 공실","addr":"","lat":37.508105,"lng":126.783721,"score":83,"reason":"방3 조건일치","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646942978","nmap":"https://map.naver.com/p?c=126.783721,37.508105,18,0,0,0,dh"},{"rank":12,"no":"2646643237","type":"빌라","price":"2,000/70","area":"55/50㎡","floor":"3/4","dir":"남서향","desc":"난곡동,올수리 예정,가성비 좋음,신대방역까지 마을버스 다님","addr":"","lat":37.475428,"lng":126.92153,"score":82,"reason":"빌라 방3 가성비","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646643237","nmap":"https://map.naver.com/p?c=126.92153,37.475428,18,0,0,0,dh"},{"rank":13,"no":"2646635263","type":"빌라","price":"1,000/70","area":"83/56㎡","floor":"2/3","dir":"남향","desc":"1호선 서해선 소사역 도보 7분 역세권 귀한 3룸 월세","addr":"","lat":37.483515,"lng":126.799474,"score":82,"reason":"빌라 방3 소사역","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646635263","nmap":"https://map.naver.com/p?c=126.799474,37.483515,18,0,0,0,dh"},{"rank":14,"no":"2646537566","type":"빌라","price":"1,500/65","area":"75/51㎡","floor":"2/3","dir":"남향","desc":"오래된 연립이지만 올수리되어 깨끗합니다","addr":"","lat":37.483515,"lng":126.799474,"score":81,"reason":"빌라 방3 올수리","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646537566","nmap":"https://map.naver.com/p?c=126.799474,37.483515,18,0,0,0,dh"},{"rank":15,"no":"2644641970","type":"단독/다가구","price":"2,000/60","area":"73/50㎡","floor":"3/3","dir":"동향","desc":"방2 거실 화1 베란다  하시입주가","addr":"","lat":null,"lng":null,"score":78,"reason":"방2 가격·면적 적합","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2644641970","nmap":"https://map.naver.com/p?c=0,0,18,0,0,0,dh"},{"rank":16,"no":"2643717046","type":"단독/다가구","price":"5,000/60","area":"55/50㎡","floor":"2/2","dir":"남향","desc":"등촌역 초초역세권 넓은 투룸 남향 즉시입주","addr":"","lat":37.550254,"lng":126.860496,"score":77,"reason":"방2 역세권 적합","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2643717046","nmap":"https://map.naver.com/p?c=126.860496,37.550254,18,0,0,0,dh"},{"rank":17,"no":"2645796723","type":"빌라","price":"3,000/70","area":"56㎡","floor":"3/3","dir":"남서향","desc":"풀옵션투룸, 주차가능, 넓은집, 집앞 버스 정류장","addr":"","lat":37.474656,"lng":126.942433,"score":77,"reason":"빌라 투룸 주차","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2645796723","nmap":"https://map.naver.com/p?c=126.942433,37.474656,18,0,0,0,dh"},{"rank":18,"no":"2646569356","type":"단독/다가구","price":"4,500/60","area":"53/50㎡","floor":"2/2","dir":"남향","desc":"방2 거실겸주방 화장실 베란다 최근수리 빠른입주가능","addr":"","lat":37.487409,"lng":126.86896,"score":77,"reason":"방2 베란다 적합","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646569356","nmap":"https://map.naver.com/p?c=126.86896,37.487409,18,0,0,0,dh"},{"rank":19,"no":"2646285656","type":"단독/다가구","price":"5,000/60","area":"50/50㎡","floor":"2/2","dir":"북서향","desc":"단독2층 수리 첫입주 방2 베란다 에어컨,세탁기","addr":"","lat":37.487409,"lng":126.86896,"score":75,"reason":"방2 수리 첫입주","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646285656","nmap":"https://map.naver.com/p?c=126.86896,37.487409,18,0,0,0,dh"},{"rank":20,"no":"2644747172","type":"단독/다가구","price":"1,000/65","area":"55㎡","floor":"저/3","dir":"남향","desc":"채광 좋고 가격 부담 없는 넓은 평수 수리요구시 가능","addr":"","lat":null,"lng":null,"score":74,"reason":"방2 채광 적합","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2644747172","nmap":"https://map.naver.com/p?c=0,0,18,0,0,0,dh"},{"rank":21,"no":"2643967808","type":"단독/다가구","price":"4,000/60","area":"95/82㎡","floor":"3/3","dir":"남동향","desc":"J신림선 도보 3분거리 가성비甲 넒은 투룸 신혼부부 추천J","addr":"","lat":37.477758,"lng":126.931901,"score":71,"reason":"방2 면적 다소큼","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2643967808","nmap":"https://map.naver.com/p?c=126.931901,37.477758,18,0,0,0,dh"},{"rank":22,"no":"2646213334","type":"단독/다가구","price":"3,000/60","area":"66㎡","floor":"3/4","dir":"서향","desc":"상가주택 3층 월세  주변사이드주차  즉시입주가능","addr":"","lat":37.489699,"lng":126.790342,"score":71,"reason":"방2 즉시입주","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646213334","nmap":"https://map.naver.com/p?c=126.790342,37.489699,18,0,0,0,dh"}]};
+const FB={"apiKey":"AIzaSyDx-hXucUaDZ2nZyokLMtwLnQN8VUS0z-s","authDomain":"land-7887b.firebaseapp.com","databaseURL":"https://land-7887b-default-rtdb.asia-southeast1.firebasedatabase.app","projectId":"land-7887b","storageBucket":"land-7887b.firebasestorage.app","messagingSenderId":"265034341218","appId":"1:265034341218:web:d8c5e832d78f7d18382a3b"};
 const COLOR={ref:'#2b6cb0',ai:'#03c75a'};
+
+let myUid;
+try{ myUid=localStorage.getItem('naver_uid'); if(!myUid){ myUid='u'+Math.random().toString(36).slice(2,10); localStorage.setItem('naver_uid',myUid);} }catch(e){ myUid='u'+Math.random().toString(36).slice(2,10); }
+let localRatings={}; try{ localRatings=JSON.parse(localStorage.getItem('naver_rate')||'{}'); }catch(e){}
+let useShared=false, allRatings={}, fb=null;
+
+const statusEl=document.getElementById('status');
 const map=L.map('map');
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);
-
 const groups={},markers={},bounds={};
 function build(key){
   const g=L.layerGroup(); markers[key]={}; bounds[key]=[];
-  DATA[key].forEach(it=>{
+  DATA[key].forEach(function(it){
     if(it.lat==null||it.lng==null)return;
     const sc = it.score!=null ? ' <span style="color:#e8590c;font-weight:700">'+it.score+'점</span>' : '';
     const nw = it.isNew ? ' <span style="background:#e8590c;color:#fff;font-size:10px;padding:1px 5px;border-radius:8px">NEW</span>' : '';
     const rz = it.reason ? '<br><span style="color:#2b8a3e">↳ '+it.reason+'</span>' : '';
     const ad = it.addr ? '<br><span style="color:#888">'+it.addr+'</span>' : '';
-    const pop='<b>'+it.rank+'. '+it.type+'</b>'+sc+nw+'<br>보증금/월세 <b style="color:#e8590c">'+it.price+'</b> · '+it.area+' · '+it.floor+' · '+it.dir+ad+'<br><span style="color:#888">'+it.desc+'</span>'+rz
-      +'<br><br><a class="nland" href="'+it.nland+'" target="_blank">▶ 네이버 부동산</a>'+(it.nmap?' &nbsp; <a href="'+it.nmap+'" target="_blank">▶ 지도</a>':'');
+    const pop='<b>'+it.rank+'. '+it.type+'</b>'+sc+nw+'<br>보증금/월세 <b style="color:#e8590c">'+it.price+'</b> · '+it.area+' · '+it.floor+' · '+it.dir+ad+'<br><span style="color:#888">'+it.desc+'</span>'+rz+'<br><br><a class="nland" href="'+it.nland+'" target="_blank">▶ 네이버 부동산</a>'+(it.nmap?' &nbsp; <a href="'+it.nmap+'" target="_blank">▶ 지도</a>':'');
     const icon=L.divIcon({className:'',html:'<div class="num-pin" style="background:'+COLOR[key]+'">'+it.rank+'</div>',iconSize:[26,26],iconAnchor:[13,13]});
     const m=L.marker([it.lat,it.lng],{icon}).bindPopup(pop,{maxWidth:260});
     g.addLayer(m); markers[key][it.no]=m; bounds[key].push([it.lat,it.lng]);
@@ -61,32 +70,60 @@ function build(key){
 }
 build('ref'); build('ai');
 
+function getState(no){
+  if(useShared){ const r=allRatings[no]||{}; let gg=0,bb=0,mine=null; for(const u in r){ if(r[u]==='good')gg++; else if(r[u]==='bad')bb++; if(u===myUid)mine=r[u]; } return {g:gg,b:bb,mine:mine}; }
+  return {g:null,b:null,mine:localRatings[no]||null};
+}
+function vote(no,v){
+  if(useShared&&fb){ const cur=(allRatings[no]||{})[myUid]; const p=fb.ref(fb.db,'ratings/'+no+'/'+myUid); if(cur===v){ fb.remove(p); } else { fb.set(p,v); } }
+  else { localRatings[no]=(localRatings[no]===v)?undefined:v; if(!localRatings[no])delete localRatings[no]; try{ localStorage.setItem('naver_rate',JSON.stringify(localRatings)); }catch(e){} renderList(curTab); }
+}
+
 const list=document.getElementById('list');
 function renderList(key){
+  if(!key)return;
   list.innerHTML='';
-  DATA[key].forEach(it=>{
-    const d=document.createElement('div');d.className='card';
+  DATA[key].forEach(function(it){
+    const st=getState(it.no);
+    const d=document.createElement('div'); d.className='card';
+    if(st.mine==='good')d.classList.add('good'); else if(st.mine==='bad')d.classList.add('bad');
     const sc = it.score!=null ? '<span class="sc">'+it.score+'점</span> ' : '';
     const nw = it.isNew ? '<span class="badge">NEW</span> ' : '';
     const rz = it.reason ? '<div class="rz">↳ '+it.reason+'</div>' : '';
     const ad = it.addr ? '<div class="ad">'+it.addr+'</div>' : '';
+    const gL = (st.g!=null&&st.g>0)?' '+st.g:'';
+    const bL = (st.b!=null&&st.b>0)?' '+st.b:'';
     d.innerHTML='<div class="top"><span class="n" style="background:'+COLOR[key]+'">'+it.rank+'</span>'+sc+nw+'<b>'+it.type+'</b> <span class="p">'+it.price+'</span></div>'
-      +'<div class="a">'+it.area+' · '+it.floor+' · '+it.dir+'</div>'+ad+rz;
-    d.onclick=()=>{ if(markers[key][it.no]){ map.setView([it.lat,it.lng],17); markers[key][it.no].openPopup(); } };
+      +'<div class="a">'+it.area+' · '+it.floor+' · '+it.dir+'</div>'+ad+rz
+      +'<div class="rate"><button class="g">👍 좋음'+gL+'</button><button class="b">👎 별로'+bL+'</button></div>';
+    d.onclick=function(){ if(markers[key][it.no]){ map.setView([it.lat,it.lng],17); markers[key][it.no].openPopup(); } };
+    d.querySelector('.g').onclick=function(e){ e.stopPropagation(); vote(it.no,'good'); };
+    d.querySelector('.b').onclick=function(e){ e.stopPropagation(); vote(it.no,'bad'); };
     list.appendChild(d);
   });
 }
 
-let cur=null;
+let curTab=null;
 function showTab(key){
-  if(cur) map.removeLayer(groups[cur]);
-  cur=key; map.addLayer(groups[key]);
+  if(curTab) map.removeLayer(groups[curTab]);
+  curTab=key; map.addLayer(groups[key]);
   if(bounds[key].length) map.fitBounds(bounds[key],{padding:[40,40]}); else map.setView([37.51,126.86],11);
   renderList(key);
-  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('active',b.dataset.k===key));
-  setTimeout(()=>map.invalidateSize(),200);
+  document.querySelectorAll('#tabs button').forEach(function(b){ b.classList.toggle('active',b.dataset.k===key); });
+  setTimeout(function(){ map.invalidateSize(); },200);
 }
-document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.k));
-window.addEventListener('resize',()=>map.invalidateSize());
-showTab('ref');  // 기본: 지수찾음
+document.querySelectorAll('#tabs button').forEach(function(b){ b.onclick=function(){ showTab(b.dataset.k); }; });
+window.addEventListener('resize',function(){ map.invalidateSize(); });
+showTab('ref');
+
+// 공유 평가: Firebase Realtime Database (실패 시 로컬 폴백)
+try{
+  const appMod = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js");
+  const dbMod = await import("https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js");
+  const db = dbMod.getDatabase(appMod.initializeApp(FB));
+  fb={ db:db, ref:dbMod.ref, set:dbMod.set, remove:dbMod.remove };
+  useShared=true;
+  statusEl.textContent='🌐 공유 모드 (모두의 평가 실시간 반영)';
+  dbMod.onValue(dbMod.ref(db,'ratings'), function(snap){ allRatings=snap.val()||{}; renderList(curTab); });
+}catch(e){ statusEl.textContent='⚠ 공유 연결 실패 — 이 기기에만 저장'; console.warn('firebase off:', e); }
 </script></body></html>

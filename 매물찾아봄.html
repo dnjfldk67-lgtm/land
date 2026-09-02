@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>네이버 관심매물 13건 지도</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  html, body { margin: 0; height: 100%; font-family: -apple-system, "Malgun Gothic", sans-serif; }
+  #wrap { display: flex; height: 100vh; }
+  #map { flex: 1 1 auto; }
+  #side { width: 300px; overflow-y: auto; border-left: 1px solid #ddd; background: #fafafa; }
+  #side h1 { font-size: 15px; margin: 12px 12px 6px; }
+  #side .sub { font-size: 11px; color: #888; margin: 0 12px 10px; }
+  .card { padding: 9px 12px; border-top: 1px solid #eee; cursor: pointer; font-size: 12px; }
+  .card:hover { background: #eef6ff; }
+  .card .n { display: inline-block; width: 18px; height: 18px; line-height: 18px; text-align: center;
+             background: #03c75a; color: #fff; border-radius: 50%; font-size: 11px; margin-right: 6px; }
+  .card .t { font-weight: 600; }
+  .card .a { color: #555; margin-top: 3px; }
+  .card .p { color: #e8590c; font-weight: 600; }
+  .num-pin { background: #03c75a; color: #fff; border: 2px solid #fff; border-radius: 50%;
+             width: 26px; height: 26px; line-height: 24px; text-align: center; font-weight: 700;
+             font-size: 13px; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+  .leaflet-popup-content { font-size: 12px; line-height: 1.5; }
+  .leaflet-popup-content b { font-size: 13px; }
+  .leaflet-popup-content a { color: #03c75a; font-weight: 600; text-decoration: none; }
+  .leaflet-popup-content a.nland { color: #e8590c; }
+  @media (max-width: 760px) {
+    #wrap { flex-direction: column; }
+    #map { height: 58vh; flex: none; }
+    #side { width: auto; flex: 1 1 auto; border-left: none; border-top: 1px solid #ddd; }
+    #side h1 { font-size: 16px; }
+    .card { padding: 12px; font-size: 13px; }
+    .leaflet-popup-content { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="map"></div>
+  <div id="side">
+    <h1>관심매물 13건</h1>
+    <div class="sub">핀/목록 클릭 → 상세 · 네이버 링크</div>
+    <div id="list"></div>
+  </div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const NBASE = 'https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=VL&b=B2&e=RETAIL&articleNo=';
+const items = [
+ {no:'2644904097', lat:37.493496, lng:126.845045, type:'빌라',        price:'5,000/70', area:'74/55㎡', fl:'2/3층', dir:'동향',   addr:'서울 구로구 오류동 오류로8길 89 인근', desc:'오류역 1분, 쓰리룸, 빠른입주'},
+ {no:'2645726923', lat:37.467083, lng:126.938996, type:'단독/다가구', price:'4,000/65', area:'63/63㎡', fl:'2/3층', dir:'남동향', addr:'서울 관악구 대학동 신림로11길 71 (녹두거리)', desc:'가성비·컨디션 3룸, 반려동물·주차 불가'},
+ {no:'2644932174', lat:37.481137, lng:126.862558, type:'단독/다가구', price:'5,000/70', area:'60/60㎡', fl:'2/2층', dir:'남동향', addr:'경기 광명시 철산동 연서로 인근 (구로 경계)', desc:'큰방3·화장실·베란다·거실'},
+ {no:'2642119943', lat:37.535472, lng:126.860378, type:'빌라',        price:'5,000/60', area:'59/46㎡', fl:'2/2층', dir:'남향',   addr:'서울 강서구 화곡동 등촌로13다길', desc:'남향 채광, 지상층 쓰리룸'},
+ {no:'2643369633', lat:37.537352, lng:126.861501, type:'빌라',        price:'4,000/70', area:'55/49㎡', fl:'3/5층', dir:'서향',   addr:'서울 강서구 등촌동 등촌로13나길', desc:'등촌동 3룸, 보증금·월세 저렴'},
+ {no:'2646982655', lat:37.506496, lng:126.782642, type:'단독/다가구', price:'1,000/70', area:'79/79㎡', fl:'1/1층', dir:'남향',   addr:'경기 부천시 원미구 도당동 옥산로146번길', desc:'방3화2 독채, 빠른입주'},
+ {no:'2644827123', lat:37.489227, lng:126.790269, type:'빌라',        price:'4,000/65', area:'61/54㎡', fl:'5/5층', dir:'남동향', addr:'경기 부천시 원미구 원미동 원미로', desc:'방2화2·거실겸방1, 즉시입주'},
+ {no:'2641744704', lat:37.48686,  lng:126.81513,  type:'빌라',        price:'4,000/60', area:'77/65㎡', fl:'2/2층', dir:'남향',   addr:'경기 부천시 원미구 역곡동 부일로750번길', desc:'단독주택, 역곡역 도보5분'},
+ {no:'2646772555', lat:37.547952, lng:126.74263,  type:'빌라',        price:'2,000/65', area:'80/59㎡', fl:'4/4층', dir:'동향',   addr:'인천 계양구 병방동 장제로920번길', desc:'방3·거실·화2, 통베란다'},
+ {no:'2646940174', lat:37.538488, lng:126.839059, type:'빌라',        price:'3,000/70', area:'58/53㎡', fl:'1/4층', dir:'남향',   addr:'서울 강서구 화곡동 강서로29길 55 인근', desc:'신월초 도보3분, 1층'},
+ {no:'2643591195', lat:37.483553, lng:126.94993,  type:'단독/다가구', price:'2,000/70', area:'51/50㎡', fl:'1/2층', dir:'남동향', addr:'서울 관악구 봉천동 봉천로49다길', desc:'서울대입구역, 가성비 3룸'},
+ {no:'2643600222', lat:37.539157, lng:126.847563, type:'다가구',      price:'5,000/50', area:'52/49㎡', fl:'2/3층', dir:'동향',   addr:'서울 강서구 화곡동 까치산로4길', desc:'가성비 3룸, 화일초 인근'},
+ {no:'2645291189', lat:37.531623, lng:126.841303, type:'빌라',        price:'3,000/65', area:'47/42㎡', fl:'1/4층', dir:'남향',   addr:'서울 강서구 화곡동 곰달래로19가길', desc:'역세권 1층 2룸'},
+];
+
+const map = L.map('map');
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap'
+}).addTo(map);
+
+const markers = [];
+const bounds = [];
+items.forEach((it, i) => {
+  const n = i + 1;
+  const nland = NBASE + it.no;
+  const nmap = `https://map.naver.com/p?c=${it.lng},${it.lat},18,0,0,0,dh`;
+  const popup =
+    `<b>${n}. ${it.type}</b><br>` +
+    `보증금/월세 <b style="color:#e8590c">${it.price}</b> · ${it.area} · ${it.fl} · ${it.dir}<br>` +
+    `📍 ${it.addr}<br>` +
+    `<span style="color:#888">${it.desc}</span><br><br>` +
+    `<a class="nland" href="${nland}" target="_blank">▶ 네이버 부동산 매물</a><br>` +
+    `<a href="${nmap}" target="_blank">▶ 네이버지도에서 보기</a>`;
+  const icon = L.divIcon({ className: '', html: `<div class="num-pin">${n}</div>`, iconSize: [26, 26], iconAnchor: [13, 13] });
+  const m = L.marker([it.lat, it.lng], { icon }).addTo(map).bindPopup(popup, { maxWidth: 260 });
+  markers.push(m);
+  bounds.push([it.lat, it.lng]);
+});
+map.fitBounds(bounds, { padding: [40, 40] });
+setTimeout(() => map.invalidateSize(), 300);
+window.addEventListener('resize', () => map.invalidateSize());
+
+// 사이드 목록
+const list = document.getElementById('list');
+items.forEach((it, i) => {
+  const n = i + 1;
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.innerHTML =
+    `<div><span class="n">${n}</span><span class="t">${it.type}</span> <span class="p">${it.price}</span></div>` +
+    `<div class="a">${it.addr}</div>`;
+  div.onclick = () => { map.setView([it.lat, it.lng], 17); markers[i].openPopup(); };
+  list.appendChild(div);
+});
+</script>
+</body>
+</html>

@@ -1,109 +1,92 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>네이버 관심매물 13건 지도</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>매물 리포트 (지수/AI)</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-  html, body { margin: 0; height: 100%; font-family: -apple-system, "Malgun Gothic", sans-serif; }
-  #wrap { display: flex; height: 100vh; }
-  #map { flex: 1 1 auto; }
-  #side { width: 300px; overflow-y: auto; border-left: 1px solid #ddd; background: #fafafa; }
-  #side h1 { font-size: 15px; margin: 12px 12px 6px; }
-  #side .sub { font-size: 11px; color: #888; margin: 0 12px 10px; }
-  .card { padding: 9px 12px; border-top: 1px solid #eee; cursor: pointer; font-size: 12px; }
-  .card:hover { background: #eef6ff; }
-  .card .n { display: inline-block; width: 18px; height: 18px; line-height: 18px; text-align: center;
-             background: #03c75a; color: #fff; border-radius: 50%; font-size: 11px; margin-right: 6px; }
-  .card .t { font-weight: 600; }
-  .card .a { color: #555; margin-top: 3px; }
-  .card .p { color: #e8590c; font-weight: 600; }
-  .num-pin { background: #03c75a; color: #fff; border: 2px solid #fff; border-radius: 50%;
-             width: 26px; height: 26px; line-height: 24px; text-align: center; font-weight: 700;
-             font-size: 13px; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
-  .leaflet-popup-content { font-size: 12px; line-height: 1.5; }
-  .leaflet-popup-content b { font-size: 13px; }
-  .leaflet-popup-content a { color: #03c75a; font-weight: 600; text-decoration: none; }
-  .leaflet-popup-content a.nland { color: #e8590c; }
-  @media (max-width: 760px) {
-    #wrap { flex-direction: column; }
-    #map { height: 58vh; flex: none; }
-    #side { width: auto; flex: 1 1 auto; border-left: none; border-top: 1px solid #ddd; }
-    #side h1 { font-size: 16px; }
-    .card { padding: 12px; font-size: 13px; }
-    .leaflet-popup-content { font-size: 13px; }
-  }
-</style>
-</head>
-<body>
-<div id="wrap">
-  <div id="map"></div>
-  <div id="side">
-    <h1>관심매물 13건</h1>
-    <div class="sub">핀/목록 클릭 → 상세 · 네이버 링크</div>
-    <div id="list"></div>
-  </div>
+  html,body{margin:0;height:100%;font-family:-apple-system,"Malgun Gothic",sans-serif}
+  body{display:flex;flex-direction:column;height:100vh}
+  #tabs{display:flex;flex:none;border-bottom:1px solid #ddd;background:#fff}
+  #tabs button{flex:1;padding:13px 8px;border:none;background:#f4f4f4;font-size:14px;font-weight:700;cursor:pointer;border-bottom:3px solid transparent;color:#666}
+  #tabs button.active[data-k="ref"]{background:#fff;color:#2b6cb0;border-bottom-color:#2b6cb0}
+  #tabs button.active[data-k="ai"]{background:#fff;color:#03a94f;border-bottom-color:#03a94f}
+  #wrap{display:flex;flex:1;min-height:0}
+  #map{flex:1 1 auto}
+  #side{width:330px;overflow-y:auto;border-left:1px solid #ddd;background:#fafafa}
+  #side .sub{font-size:11px;color:#888;margin:10px 12px}
+  .card{padding:10px 12px;border-top:1px solid #eee;cursor:pointer;font-size:12px}
+  .card:hover{background:#eef6ff}
+  .card .top{display:flex;align-items:center;gap:6px;margin-bottom:3px;flex-wrap:wrap}
+  .card .n{display:inline-block;min-width:18px;height:18px;line-height:18px;text-align:center;color:#fff;border-radius:50%;font-size:11px}
+  .card .sc{font-weight:700;color:#e8590c}
+  .card .badge{background:#e8590c;color:#fff;font-size:10px;padding:1px 5px;border-radius:8px}
+  .card .p{color:#e8590c;font-weight:600}
+  .card .a{color:#555;margin-top:2px}
+  .card .rz{color:#2b8a3e;margin-top:2px}
+  .card .ad{color:#888;margin-top:2px}
+  .num-pin{color:#fff;border:2px solid #fff;border-radius:50%;width:26px;height:26px;line-height:24px;text-align:center;font-weight:700;font-size:12px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .leaflet-popup-content{font-size:12px;line-height:1.5}
+  .leaflet-popup-content a{color:#03c75a;font-weight:600;text-decoration:none}
+  .leaflet-popup-content a.nland{color:#e8590c}
+  @media(max-width:760px){#wrap{flex-direction:column}#map{height:50vh;flex:none}#side{width:auto;flex:1 1 auto;border-left:none;border-top:1px solid #ddd}.card{padding:12px;font-size:13px}}
+</style></head><body>
+<div id="tabs">
+  <button data-k="ref">지수찾음 (13)</button>
+  <button data-k="ai">AI찾음 (22)</button>
 </div>
+<div id="wrap"><div id="map"></div><div id="side"><div class="sub">2026. 9. 2. PM 3:39:24</div><div id="list"></div></div></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const NBASE = 'https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=VL&b=B2&e=RETAIL&articleNo=';
-const items = [
- {no:'2644904097', lat:37.493496, lng:126.845045, type:'빌라',        price:'5,000/70', area:'74/55㎡', fl:'2/3층', dir:'동향',   addr:'서울 구로구 오류동 오류로8길 89 인근', desc:'오류역 1분, 쓰리룸, 빠른입주'},
- {no:'2645726923', lat:37.467083, lng:126.938996, type:'단독/다가구', price:'4,000/65', area:'63/63㎡', fl:'2/3층', dir:'남동향', addr:'서울 관악구 대학동 신림로11길 71 (녹두거리)', desc:'가성비·컨디션 3룸, 반려동물·주차 불가'},
- {no:'2644932174', lat:37.481137, lng:126.862558, type:'단독/다가구', price:'5,000/70', area:'60/60㎡', fl:'2/2층', dir:'남동향', addr:'경기 광명시 철산동 연서로 인근 (구로 경계)', desc:'큰방3·화장실·베란다·거실'},
- {no:'2642119943', lat:37.535472, lng:126.860378, type:'빌라',        price:'5,000/60', area:'59/46㎡', fl:'2/2층', dir:'남향',   addr:'서울 강서구 화곡동 등촌로13다길', desc:'남향 채광, 지상층 쓰리룸'},
- {no:'2643369633', lat:37.537352, lng:126.861501, type:'빌라',        price:'4,000/70', area:'55/49㎡', fl:'3/5층', dir:'서향',   addr:'서울 강서구 등촌동 등촌로13나길', desc:'등촌동 3룸, 보증금·월세 저렴'},
- {no:'2646982655', lat:37.506496, lng:126.782642, type:'단독/다가구', price:'1,000/70', area:'79/79㎡', fl:'1/1층', dir:'남향',   addr:'경기 부천시 원미구 도당동 옥산로146번길', desc:'방3화2 독채, 빠른입주'},
- {no:'2644827123', lat:37.489227, lng:126.790269, type:'빌라',        price:'4,000/65', area:'61/54㎡', fl:'5/5층', dir:'남동향', addr:'경기 부천시 원미구 원미동 원미로', desc:'방2화2·거실겸방1, 즉시입주'},
- {no:'2641744704', lat:37.48686,  lng:126.81513,  type:'빌라',        price:'4,000/60', area:'77/65㎡', fl:'2/2층', dir:'남향',   addr:'경기 부천시 원미구 역곡동 부일로750번길', desc:'단독주택, 역곡역 도보5분'},
- {no:'2646772555', lat:37.547952, lng:126.74263,  type:'빌라',        price:'2,000/65', area:'80/59㎡', fl:'4/4층', dir:'동향',   addr:'인천 계양구 병방동 장제로920번길', desc:'방3·거실·화2, 통베란다'},
- {no:'2646940174', lat:37.538488, lng:126.839059, type:'빌라',        price:'3,000/70', area:'58/53㎡', fl:'1/4층', dir:'남향',   addr:'서울 강서구 화곡동 강서로29길 55 인근', desc:'신월초 도보3분, 1층'},
- {no:'2643591195', lat:37.483553, lng:126.94993,  type:'단독/다가구', price:'2,000/70', area:'51/50㎡', fl:'1/2층', dir:'남동향', addr:'서울 관악구 봉천동 봉천로49다길', desc:'서울대입구역, 가성비 3룸'},
- {no:'2643600222', lat:37.539157, lng:126.847563, type:'다가구',      price:'5,000/50', area:'52/49㎡', fl:'2/3층', dir:'동향',   addr:'서울 강서구 화곡동 까치산로4길', desc:'가성비 3룸, 화일초 인근'},
- {no:'2645291189', lat:37.531623, lng:126.841303, type:'빌라',        price:'3,000/65', area:'47/42㎡', fl:'1/4층', dir:'남향',   addr:'서울 강서구 화곡동 곰달래로19가길', desc:'역세권 1층 2룸'},
-];
+const DATA={"ref":[{"rank":1,"no":"2644904097","type":"빌라","price":"5,000/70","area":"74/55㎡","floor":"2/3","dir":"동향","desc":"오류역 1분, 쓰리룸, 빠른입주","addr":"서울 구로구 오류동","lat":37.493496,"lng":126.845045,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2644904097","nmap":"https://map.naver.com/p?c=126.845045,37.493496,18,0,0,0,dh"},{"rank":2,"no":"2645726923","type":"단독/다가구","price":"4,000/65","area":"63/63㎡","floor":"2/3","dir":"남동향","desc":"가성비 3룸, 반려동물·주차 불가","addr":"서울 관악구 대학동","lat":37.467083,"lng":126.938996,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2645726923","nmap":"https://map.naver.com/p?c=126.938996,37.467083,18,0,0,0,dh"},{"rank":3,"no":"2644932174","type":"단독/다가구","price":"5,000/70","area":"60/60㎡","floor":"2/2","dir":"남동향","desc":"큰방3·화장실·베란다·거실","addr":"경기 광명시 철산동","lat":37.481137,"lng":126.862558,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2644932174","nmap":"https://map.naver.com/p?c=126.862558,37.481137,18,0,0,0,dh"},{"rank":4,"no":"2642119943","type":"빌라","price":"5,000/60","area":"59/46㎡","floor":"2/2","dir":"남향","desc":"지상층 쓰리룸, 채광 좋음","addr":"서울 강서구 화곡동","lat":37.535472,"lng":126.860378,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2642119943","nmap":"https://map.naver.com/p?c=126.860378,37.535472,18,0,0,0,dh"},{"rank":5,"no":"2643369633","type":"빌라","price":"4,000/70","area":"55/49㎡","floor":"3/5","dir":"서향","desc":"등촌동 3룸, 저렴","addr":"서울 강서구 등촌동","lat":37.537352,"lng":126.861501,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2643369633","nmap":"https://map.naver.com/p?c=126.861501,37.537352,18,0,0,0,dh"},{"rank":6,"no":"2646982655","type":"단독/다가구","price":"1,000/70","area":"79/79㎡","floor":"1/1","dir":"남향","desc":"독채, 방3화2, 빠른입주","addr":"경기 부천시 원미구 도당동","lat":37.506496,"lng":126.782642,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646982655","nmap":"https://map.naver.com/p?c=126.782642,37.506496,18,0,0,0,dh"},{"rank":7,"no":"2644827123","type":"빌라","price":"4,000/65","area":"61/54㎡","floor":"5/5","dir":"남동향","desc":"방2화2·거실겸방1, 즉시입주","addr":"경기 부천시 원미구 원미동","lat":37.489227,"lng":126.790269,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2644827123","nmap":"https://map.naver.com/p?c=126.790269,37.489227,18,0,0,0,dh"},{"rank":8,"no":"2641744704","type":"빌라","price":"4,000/60","area":"77/65㎡","floor":"2/2","dir":"남향","desc":"단독주택, 역곡역 도보5분","addr":"경기 부천시 원미구 역곡동","lat":37.48686,"lng":126.81513,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2641744704","nmap":"https://map.naver.com/p?c=126.81513,37.48686,18,0,0,0,dh"},{"rank":9,"no":"2646772555","type":"빌라","price":"2,000/65","area":"80/59㎡","floor":"4/4","dir":"동향","desc":"방3·거실·화2, 통베란다","addr":"인천 계양구 병방동","lat":37.547952,"lng":126.74263,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646772555","nmap":"https://map.naver.com/p?c=126.74263,37.547952,18,0,0,0,dh"},{"rank":10,"no":"2646940174","type":"빌라","price":"3,000/70","area":"58/53㎡","floor":"1/4","dir":"남향","desc":"신월초 도보3분, 1층","addr":"서울 강서구 화곡동","lat":37.538488,"lng":126.839059,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646940174","nmap":"https://map.naver.com/p?c=126.839059,37.538488,18,0,0,0,dh"},{"rank":11,"no":"2643591195","type":"단독/다가구","price":"2,000/70","area":"51/50㎡","floor":"1/2","dir":"남동향","desc":"서울대입구역, 가성비 3룸","addr":"서울 관악구 봉천동","lat":37.483553,"lng":126.94993,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2643591195","nmap":"https://map.naver.com/p?c=126.94993,37.483553,18,0,0,0,dh"},{"rank":12,"no":"2643600222","type":"다가구","price":"5,000/50","area":"52/49㎡","floor":"2/3","dir":"동향","desc":"가성비 3룸, 화일초 인근","addr":"서울 강서구 화곡동","lat":37.539157,"lng":126.847563,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2643600222","nmap":"https://map.naver.com/p?c=126.847563,37.539157,18,0,0,0,dh"},{"rank":13,"no":"2645291189","type":"빌라","price":"3,000/65","area":"47/42㎡","floor":"1/4","dir":"남향","desc":"역세권 1층 2룸","addr":"서울 강서구 화곡동","lat":37.531623,"lng":126.841303,"score":null,"reason":"","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2645291189","nmap":"https://map.naver.com/p?c=126.841303,37.531623,18,0,0,0,dh"}],"ai":[{"rank":1,"no":"2647151433","type":"단독/다가구","price":"5,000/60","area":"58/58㎡","floor":"2/3","dir":"남향","desc":"2층 방3개,화장실1개, 큰 베란다, 저렴한 월세","addr":"","lat":37.545235,"lng":126.859883,"score":88,"reason":"방3 5천/60 딱맞음","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2647151433","nmap":"https://map.naver.com/p?c=126.859883,37.545235,18,0,0,0,dh"},{"rank":2,"no":"2645475264","type":"단독/다가구","price":"5,000/70","area":"50/50㎡","floor":"2/3","dir":"남동향","desc":"봉천동 방3,화1 즉시입주","addr":"","lat":37.488722,"lng":126.933989,"score":88,"reason":"방3 5천/70 봉천 일치","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2645475264","nmap":"https://map.naver.com/p?c=126.933989,37.488722,18,0,0,0,dh"},{"rank":3,"no":"2645124420","type":"단독/다가구","price":"4,000/65","area":"59㎡","floor":"1/3","dir":"남동향","desc":"창과 거실이 넓은 구조이고 자연 채광이 잘 들어오는 가성비 좋은 빌라","addr":"","lat":37.47632,"lng":126.929261,"score":88,"reason":"방3 채광 가성비 일치","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2645124420","nmap":"https://map.naver.com/p?c=126.929261,37.47632,18,0,0,0,dh"},{"rank":4,"no":"2646832611","type":"단독/다가구","price":"5,000/60","area":"58㎡","floor":"2/3","dir":"남향","desc":"도배장판 수리예정 10월말입주협의 방3화1 큰 베란다 조용한주택","addr":"","lat":37.545235,"lng":126.859883,"score":86,"reason":"방3 베란다 조건일치","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646832611","nmap":"https://map.naver.com/p?c=126.859883,37.545235,18,0,0,0,dh"},{"rank":5,"no":"2646483078","type":"단독/다가구","price":"5,000/60","area":"58/50㎡","floor":"중/4","dir":"남향","desc":"저렴한 방3,욕1, 넓은 베란다, 초중고 인근 ","addr":"","lat":37.545235,"lng":126.859883,"score":86,"reason":"방3 저렴 조건일치","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646483078","nmap":"https://map.naver.com/p?c=126.859883,37.545235,18,0,0,0,dh"},{"rank":6,"no":"2642627479","type":"단독/다가구","price":"4,000/70","area":"53㎡","floor":"2/3","dir":"남서향","desc":"","addr":"","lat":37.474489,"lng":126.942037,"score":86,"reason":"방3 4천/70 일치","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2642627479","nmap":"https://map.naver.com/p?c=126.942037,37.474489,18,0,0,0,dh"},{"rank":7,"no":"2646748773","type":"단독/다가구","price":"3,000/50","area":"50/50㎡","floor":"1/2","dir":"남향","desc":"방3화2 보증금조정, 1층, 주차가능소형, 즉시입주,재개발구역","addr":"","lat":37.490975,"lng":126.958551,"score":85,"reason":"방3화2 즉시입주","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646748773","nmap":"https://map.naver.com/p?c=126.958551,37.490975,18,0,0,0,dh"},{"rank":8,"no":"2647284041","type":"빌라","price":"4,000/65","area":"61/54㎡","floor":"5/5","dir":"남동향","desc":"공실 원미부흥시장부근 올수리 방3화2  엘베무","addr":"","lat":37.489227,"lng":126.790269,"score":85,"reason":"빌라 방3화2 원미","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2647284041","nmap":"https://map.naver.com/p?c=126.790269,37.489227,18,0,0,0,dh"},{"rank":9,"no":"2646256621","type":"단독/다가구","price":"3,000/70","area":"57/57㎡","floor":"고/3","dir":"남향","desc":"서울대입구역세권 학군최고 주거환경굿","addr":"","lat":37.47783,"lng":126.950608,"score":84,"reason":"방3 서울대입구 역세권","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646256621","nmap":"https://map.naver.com/p?c=126.950608,37.47783,18,0,0,0,dh"},{"rank":10,"no":"2644674531","type":"단독/다가구","price":"2,000/60","area":"70/70㎡","floor":"2/2","dir":"남향","desc":"융자없음,옥상사용, 거실있는 넓은3룸, 입주협의 가능","addr":"","lat":37.496728,"lng":126.793315,"score":84,"reason":"방3 거실 넓음","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2644674531","nmap":"https://map.naver.com/p?c=126.793315,37.496728,18,0,0,0,dh"},{"rank":11,"no":"2646942978","type":"단독/다가구","price":"2,000/60","area":"78/70㎡","floor":"2/3","dir":"남향","desc":"방3 화1 공실","addr":"","lat":37.508105,"lng":126.783721,"score":83,"reason":"방3 조건일치","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646942978","nmap":"https://map.naver.com/p?c=126.783721,37.508105,18,0,0,0,dh"},{"rank":12,"no":"2646643237","type":"빌라","price":"2,000/70","area":"55/50㎡","floor":"3/4","dir":"남서향","desc":"난곡동,올수리 예정,가성비 좋음,신대방역까지 마을버스 다님","addr":"","lat":37.475428,"lng":126.92153,"score":82,"reason":"빌라 방3 가성비","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646643237","nmap":"https://map.naver.com/p?c=126.92153,37.475428,18,0,0,0,dh"},{"rank":13,"no":"2646635263","type":"빌라","price":"1,000/70","area":"83/56㎡","floor":"2/3","dir":"남향","desc":"1호선 서해선 소사역 도보 7분 역세권 귀한 3룸 월세","addr":"","lat":37.483515,"lng":126.799474,"score":82,"reason":"빌라 방3 소사역","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646635263","nmap":"https://map.naver.com/p?c=126.799474,37.483515,18,0,0,0,dh"},{"rank":14,"no":"2646537566","type":"빌라","price":"1,500/65","area":"75/51㎡","floor":"2/3","dir":"남향","desc":"오래된 연립이지만 올수리되어 깨끗합니다","addr":"","lat":37.483515,"lng":126.799474,"score":81,"reason":"빌라 방3 올수리","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646537566","nmap":"https://map.naver.com/p?c=126.799474,37.483515,18,0,0,0,dh"},{"rank":15,"no":"2644641970","type":"단독/다가구","price":"2,000/60","area":"73/50㎡","floor":"3/3","dir":"동향","desc":"방2 거실 화1 베란다  하시입주가","addr":"","lat":null,"lng":null,"score":78,"reason":"방2 가격·면적 적합","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2644641970","nmap":"https://map.naver.com/p?c=0,0,18,0,0,0,dh"},{"rank":16,"no":"2643717046","type":"단독/다가구","price":"5,000/60","area":"55/50㎡","floor":"2/2","dir":"남향","desc":"등촌역 초초역세권 넓은 투룸 남향 즉시입주","addr":"","lat":37.550254,"lng":126.860496,"score":77,"reason":"방2 역세권 적합","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2643717046","nmap":"https://map.naver.com/p?c=126.860496,37.550254,18,0,0,0,dh"},{"rank":17,"no":"2645796723","type":"빌라","price":"3,000/70","area":"56㎡","floor":"3/3","dir":"남서향","desc":"풀옵션투룸, 주차가능, 넓은집, 집앞 버스 정류장","addr":"","lat":37.474656,"lng":126.942433,"score":77,"reason":"빌라 투룸 주차","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2645796723","nmap":"https://map.naver.com/p?c=126.942433,37.474656,18,0,0,0,dh"},{"rank":18,"no":"2646569356","type":"단독/다가구","price":"4,500/60","area":"53/50㎡","floor":"2/2","dir":"남향","desc":"방2 거실겸주방 화장실 베란다 최근수리 빠른입주가능","addr":"","lat":37.487409,"lng":126.86896,"score":77,"reason":"방2 베란다 적합","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646569356","nmap":"https://map.naver.com/p?c=126.86896,37.487409,18,0,0,0,dh"},{"rank":19,"no":"2646285656","type":"단독/다가구","price":"5,000/60","area":"50/50㎡","floor":"2/2","dir":"북서향","desc":"단독2층 수리 첫입주 방2 베란다 에어컨,세탁기","addr":"","lat":37.487409,"lng":126.86896,"score":75,"reason":"방2 수리 첫입주","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646285656","nmap":"https://map.naver.com/p?c=126.86896,37.487409,18,0,0,0,dh"},{"rank":20,"no":"2644747172","type":"단독/다가구","price":"1,000/65","area":"55㎡","floor":"저/3","dir":"남향","desc":"채광 좋고 가격 부담 없는 넓은 평수 수리요구시 가능","addr":"","lat":null,"lng":null,"score":74,"reason":"방2 채광 적합","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2644747172","nmap":"https://map.naver.com/p?c=0,0,18,0,0,0,dh"},{"rank":21,"no":"2643967808","type":"단독/다가구","price":"4,000/60","area":"95/82㎡","floor":"3/3","dir":"남동향","desc":"J신림선 도보 3분거리 가성비甲 넒은 투룸 신혼부부 추천J","addr":"","lat":37.477758,"lng":126.931901,"score":71,"reason":"방2 면적 다소큼","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2643967808","nmap":"https://map.naver.com/p?c=126.931901,37.477758,18,0,0,0,dh"},{"rank":22,"no":"2646213334","type":"단독/다가구","price":"3,000/60","area":"66㎡","floor":"3/4","dir":"서향","desc":"상가주택 3층 월세  주변사이드주차  즉시입주가능","addr":"","lat":37.489699,"lng":126.790342,"score":71,"reason":"방2 즉시입주","isNew":false,"nland":"https://new.land.naver.com/houses?ms=2AIZ4B,3zc5gM,16&a=DDDGG:JWJT:SGJT:VL&b=B2&e=RETAIL&articleNo=2646213334","nmap":"https://map.naver.com/p?c=126.790342,37.489699,18,0,0,0,dh"}]};
+const COLOR={ref:'#2b6cb0',ai:'#03c75a'};
+const map=L.map('map');
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(map);
 
-const map = L.map('map');
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '&copy; OpenStreetMap'
-}).addTo(map);
+const groups={},markers={},bounds={};
+function build(key){
+  const g=L.layerGroup(); markers[key]={}; bounds[key]=[];
+  DATA[key].forEach(it=>{
+    if(it.lat==null||it.lng==null)return;
+    const sc = it.score!=null ? ' <span style="color:#e8590c;font-weight:700">'+it.score+'점</span>' : '';
+    const nw = it.isNew ? ' <span style="background:#e8590c;color:#fff;font-size:10px;padding:1px 5px;border-radius:8px">NEW</span>' : '';
+    const rz = it.reason ? '<br><span style="color:#2b8a3e">↳ '+it.reason+'</span>' : '';
+    const ad = it.addr ? '<br><span style="color:#888">'+it.addr+'</span>' : '';
+    const pop='<b>'+it.rank+'. '+it.type+'</b>'+sc+nw+'<br>보증금/월세 <b style="color:#e8590c">'+it.price+'</b> · '+it.area+' · '+it.floor+' · '+it.dir+ad+'<br><span style="color:#888">'+it.desc+'</span>'+rz
+      +'<br><br><a class="nland" href="'+it.nland+'" target="_blank">▶ 네이버 부동산</a>'+(it.nmap?' &nbsp; <a href="'+it.nmap+'" target="_blank">▶ 지도</a>':'');
+    const icon=L.divIcon({className:'',html:'<div class="num-pin" style="background:'+COLOR[key]+'">'+it.rank+'</div>',iconSize:[26,26],iconAnchor:[13,13]});
+    const m=L.marker([it.lat,it.lng],{icon}).bindPopup(pop,{maxWidth:260});
+    g.addLayer(m); markers[key][it.no]=m; bounds[key].push([it.lat,it.lng]);
+  });
+  groups[key]=g;
+}
+build('ref'); build('ai');
 
-const markers = [];
-const bounds = [];
-items.forEach((it, i) => {
-  const n = i + 1;
-  const nland = NBASE + it.no;
-  const nmap = `https://map.naver.com/p?c=${it.lng},${it.lat},18,0,0,0,dh`;
-  const popup =
-    `<b>${n}. ${it.type}</b><br>` +
-    `보증금/월세 <b style="color:#e8590c">${it.price}</b> · ${it.area} · ${it.fl} · ${it.dir}<br>` +
-    `📍 ${it.addr}<br>` +
-    `<span style="color:#888">${it.desc}</span><br><br>` +
-    `<a class="nland" href="${nland}" target="_blank">▶ 네이버 부동산 매물</a><br>` +
-    `<a href="${nmap}" target="_blank">▶ 네이버지도에서 보기</a>`;
-  const icon = L.divIcon({ className: '', html: `<div class="num-pin">${n}</div>`, iconSize: [26, 26], iconAnchor: [13, 13] });
-  const m = L.marker([it.lat, it.lng], { icon }).addTo(map).bindPopup(popup, { maxWidth: 260 });
-  markers.push(m);
-  bounds.push([it.lat, it.lng]);
-});
-map.fitBounds(bounds, { padding: [40, 40] });
-setTimeout(() => map.invalidateSize(), 300);
-window.addEventListener('resize', () => map.invalidateSize());
+const list=document.getElementById('list');
+function renderList(key){
+  list.innerHTML='';
+  DATA[key].forEach(it=>{
+    const d=document.createElement('div');d.className='card';
+    const sc = it.score!=null ? '<span class="sc">'+it.score+'점</span> ' : '';
+    const nw = it.isNew ? '<span class="badge">NEW</span> ' : '';
+    const rz = it.reason ? '<div class="rz">↳ '+it.reason+'</div>' : '';
+    const ad = it.addr ? '<div class="ad">'+it.addr+'</div>' : '';
+    d.innerHTML='<div class="top"><span class="n" style="background:'+COLOR[key]+'">'+it.rank+'</span>'+sc+nw+'<b>'+it.type+'</b> <span class="p">'+it.price+'</span></div>'
+      +'<div class="a">'+it.area+' · '+it.floor+' · '+it.dir+'</div>'+ad+rz;
+    d.onclick=()=>{ if(markers[key][it.no]){ map.setView([it.lat,it.lng],17); markers[key][it.no].openPopup(); } };
+    list.appendChild(d);
+  });
+}
 
-// 사이드 목록
-const list = document.getElementById('list');
-items.forEach((it, i) => {
-  const n = i + 1;
-  const div = document.createElement('div');
-  div.className = 'card';
-  div.innerHTML =
-    `<div><span class="n">${n}</span><span class="t">${it.type}</span> <span class="p">${it.price}</span></div>` +
-    `<div class="a">${it.addr}</div>`;
-  div.onclick = () => { map.setView([it.lat, it.lng], 17); markers[i].openPopup(); };
-  list.appendChild(div);
-});
-</script>
-</body>
-</html>
+let cur=null;
+function showTab(key){
+  if(cur) map.removeLayer(groups[cur]);
+  cur=key; map.addLayer(groups[key]);
+  if(bounds[key].length) map.fitBounds(bounds[key],{padding:[40,40]}); else map.setView([37.51,126.86],11);
+  renderList(key);
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('active',b.dataset.k===key));
+  setTimeout(()=>map.invalidateSize(),200);
+}
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.k));
+window.addEventListener('resize',()=>map.invalidateSize());
+showTab('ref');  // 기본: 지수찾음
+</script></body></html>
